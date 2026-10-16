@@ -1,124 +1,128 @@
-# Corporate Network Infrastructure & Troubleshooting
+# Corporate Network Infrastructure — Cisco Packet Tracer
 
-**Project Owner:** Kelvin Kiptoo Ngetich  
-**Organization:** Kelvin Business Solutions (simulated company)  
-**Platform:** Cisco Packet Tracer  
-**Project Type:** Computer Networking
+A practical computer networking project developed by **Kelvin Kiptoo Ngetich** using Cisco Packet Tracer. The project demonstrates small-business network design, VLAN segmentation, inter-VLAN routing, IP addressing, network services, secure device management, connectivity testing, and troubleshooting.
 
 ## 1. Project Overview
 
-This project simulates a corporate network for a fictional company, Kelvin Business Solutions. It demonstrates the design and configuration of a departmental network using VLANs, router-on-a-stick inter-VLAN routing, DHCP, network services, and secure remote device management.
+The goal of this project is to design and test a segmented business network that supports different departments while allowing authorized communication between networks.
 
-The project provides practical experience with networking concepts and Cisco network device configuration.
+The simulated environment represents a small business with separate networks for IT, Finance, HR, Reception, and Servers.
 
-## 2. Project Objectives
+## 2. Network Design
 
-- Design and configure a corporate LAN.
-- Segment departments using Virtual LANs (VLANs).
-- Configure inter-VLAN routing using IEEE 802.1Q trunking and router subinterfaces.
-- Configure DHCP for automatic IPv4 addressing.
-- Configure and test network services.
-- Configure SSH-only remote management.
-- Verify network connectivity and troubleshoot communication problems.
+The network uses a Cisco 2911 router and a Cisco 2960 switch.
 
-## 3. Network Topology
+Key design elements include:
 
-The simulated network contains:
+- Five VLANs representing different departments and services.
+- VLAN segmentation to separate departmental traffic.
+- Router-on-a-stick configuration for inter-VLAN routing.
+- IPv4 addressing and subnetting.
+- DHCP configuration for client addressing.
+- SSH-based switch management.
+- A dedicated server network hosting simulated business services.
 
-- One Cisco 2911 router (`KBS-Router`).
-- One Cisco 2960 switch (`KBS-Switch`).
-- Four departmental PCs.
-- One server providing network services.
+## 3. VLANs and IP Addressing
 
-The switch connects to the router through an 802.1Q trunk. Router subinterfaces provide default gateways for the departmental VLANs.
+The network uses separate IPv4 subnets for the departmental VLANs and server network.
 
-## 4. VLAN and IP Addressing Plan
+The IT workstation uses `192.168.10.11/24`, with `192.168.10.1` as its default gateway.
 
-| VLAN | Department | Network | Default Gateway |
-|---|---|---|---|
-| 10 | IT | 192.168.10.0/24 | 192.168.10.1 |
-| 20 | Finance | 192.168.20.0/24 | 192.168.20.1 |
-| 30 | HR | 192.168.30.0/24 | 192.168.30.1 |
-| 40 | Reception | 192.168.40.0/24 | 192.168.40.1 |
-| 50 | Servers | 192.168.50.0/24 | 192.168.50.1 |
+The server uses `192.168.50.10` on the `192.168.50.0/24` network.
 
-The server uses the static IPv4 address `192.168.50.10`. DHCP pools are configured for all five networks, with addresses `.1` through `.10` excluded from dynamic allocation.
+These addresses are used in the documented connectivity and troubleshooting tests.
 
-The switch management address is `192.168.10.2` on VLAN 10.
+## 4. Network Services
 
-## 5. Network Technologies and Configuration
+The simulated server provides the following services:
 
-### VLANs and Switching
-- Created five departmental VLANs.
-- Assigned switch access ports to the appropriate VLANs.
-- Configured the switch-to-router connection as an IEEE 802.1Q trunk.
+- DNS
+- HTTP
+- Email
+- FTP
 
-### Inter-VLAN Routing
-- Configured router subinterfaces on `GigabitEthernet0/0`.
-- Assigned a gateway address to each VLAN.
-- Implemented router-on-a-stick routing to enable communication between VLANs.
+These services represent common applications that may be used in a small-business network.
 
-### DHCP and IPv4 Addressing
-- Configured five DHCP pools for IT, Finance, HR, Reception, and Servers.
-- Configured default gateway and DNS settings for DHCP clients.
+## 5. Security and Device Management
 
-### Network Services
-- **HTTP:** Hosted the simulated company website.
-- **DNS:** Configured local hostname resolution.
-- **Email:** Configured SMTP and POP3 services.
-- **FTP:** Enabled file-transfer testing.
+The project demonstrates basic network management and security practices, including:
 
-### Secure Device Management
-- Configured SSH version 2.
-- Configured local authentication on the router's VTY lines.
-- Restricted remote VTY access to SSH rather than Telnet.
+- VLAN-based network segmentation.
+- SSH-only remote switch management.
+- Initial device configuration.
+- Saved router configuration.
+- Connectivity verification between network devices.
+- Troubleshooting of gateway and management connectivity problems.
 
-## 6. Verification and Troubleshooting
+This is a learning simulation and is not a claim of a complete production security assessment.
 
-The following checks were performed during the project:
+## 6. Testing and Verification
 
-- Verified VLAN assignments and trunk status.
-- Inspected router subinterfaces and IPv4 addressing.
-- Tested DHCP client addressing.
-- Tested connectivity to departmental gateways.
-- Tested connectivity to the server at `192.168.50.10`.
-- Tested HTTP access using the server's IP address.
-- Tested email and FTP services.
-- Inspected the router's SSH configuration.
-- Verified switch management connectivity from the IT PC.
-- Inspected the router startup configuration to confirm saved settings.
+The project includes practical connectivity and configuration checks.
+
+Testing covered:
+
+- Switch management connectivity from the IT workstation.
+- Router configuration and saved settings.
+- Communication between network devices.
+- Connectivity to the server on a different subnet.
+- Troubleshooting and verification after correcting a network configuration error.
 
 The switch management ping initially timed out. After moving the management interface to VLAN 10, a subsequent test received four replies with zero packet loss.
 
-Configuration and testing evidence is available in the `screenshots/` folder. Results relate to the Cisco Packet Tracer simulation.
+## 7. Controlled Fault Diagnosis: Incorrect Default Gateway
 
-## 7. Project Files
+### Problem
 
-- `Kelvin-Business-Solutions-VLAN.pkt` — Packet Tracer simulation.
-- `screenshots/` — configuration and testing evidence.
+The IT workstation could not reach the server at `192.168.50.10` during a controlled troubleshooting test.
+
+### Cause
+
+The workstation's default gateway was temporarily changed from `192.168.10.1` to the incorrect address `192.168.10.254`.
+
+### Diagnosis
+
+The workstation could still ping `192.168.10.1` because the gateway was on the same subnet. However, communication with the server on the separate `192.168.50.0/24` network failed while the incorrect gateway was configured.
+
+### Resolution
+
+The workstation's default gateway was restored to `192.168.10.1`.
+
+### Verification
+
+A repeat ping to `192.168.50.10` received four replies with zero packet loss.
+
+### Evidence
+
+![Gateway fault and repair evidence](evidence/gateway-fault-and-repair.png)
+
+### Lesson Learned
+
+A workstation may communicate with devices on its local subnet but fail to reach other networks when its default gateway is incorrect. Effective troubleshooting involves identifying the fault, correcting the configuration, and repeating the test to verify the resolution.
+
+## 8. Project Files
+
+- `Kelvin-Business-Solutions-VLAN.pkt` — Cisco Packet Tracer network simulation.
+- Root directory — configuration and testing screenshots.
+- `evidence/` — additional troubleshooting evidence, including `gateway-fault-and-repair.png`.
 - `README.md` — project documentation.
 
-## 8. Networking Skills Demonstrated
+## 9. Networking Skills Demonstrated
 
 - IPv4 addressing and subnetting.
 - VLAN configuration and segmentation.
-- IEEE 802.1Q trunking.
-- Router-on-a-stick inter-VLAN routing.
-- DHCP configuration.
-- DNS, HTTP, SMTP, POP3, and FTP configuration.
-- SSH-based network device management.
-- Network connectivity testing and troubleshooting.
-- Cisco IOS configuration and technical documentation.
+- Inter-VLAN routing.
+- Router and switch configuration.
+- DHCP and server services.
+- SSH-based device management.
+- Connectivity testing and fault diagnosis.
+- Technical documentation and evidence collection.
 
-## 9. Future Improvements
+## 10. Learning Objectives
 
-- Implement a dedicated management VLAN.
-- Configure access control lists (ACLs) to restrict inter-department traffic.
-- Secure unused switch ports and implement port security.
-- Add network monitoring and more detailed security testing.
-- Expand the topology to include additional switches, routers, and subnets.
+This project supports practical learning in network installation, configuration, verification, troubleshooting, and documentation. It can be used as a portfolio demonstration of foundational networking skills developed through hands-on work in Cisco Packet Tracer.
 
-## 10. Author
+## 11. Author
 
 **Kelvin Kiptoo Ngetich**
 
